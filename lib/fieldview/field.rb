@@ -9,6 +9,15 @@ module Fieldview
 			end
 		end
 
+		def attributes 
+			{
+				id: self.id, 
+				name: self.name, 
+				boundary_id: self.boundary_id, 
+				resource_owner_id: self.resource_owner_id
+			}
+		end
+
 		def boundary
  			super(self.boundary_id)
 		end
