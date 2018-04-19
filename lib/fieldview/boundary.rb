@@ -1,22 +1,14 @@
 module Fieldview
 	class Boundary < Fieldview::Base
 
-		attr_accessor :geo_json_data, :id
+		attr_accessor :geo_json_data
 
 		def initialize(data)
 			@geo_json_data = data
 		end
 
-		def attributes
-			{geo_json_data: self.geo_json_data}
-		end
-
-		def serializable_hash(options = nil)
-			self.geo_json_data
-		end
-
-		def as_json
-			self.geo_json_data.as_json
+		def as_json(options = {})
+			self.geo_json_data.as_json(options)
 		end
 	end
 end

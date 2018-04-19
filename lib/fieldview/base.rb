@@ -1,6 +1,5 @@
 module Fieldview
 	class Base
-		include ActiveModel::Serializers::JSON
 		
 		attr_accessor :access_token
 
