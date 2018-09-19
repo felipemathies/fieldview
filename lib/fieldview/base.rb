@@ -13,16 +13,19 @@ module Fieldview
 
  		private
 
- 		def api_call(resource, method, id = nil)
+ 		def api_call(resource, method, id = nil, params = {})
  			response = nil
 
  			if method == :get
- 				path = "/#{resource.to_s}" 
- 				path << "/#{id}" unless id.blank?
+ 				path = "/#{resource.to_s}"
+ 				path << "/#{id}" 	unless id.blank?
 
- 				response = Fieldview::HttpService.get(path, self.access_token)
+ 				response = Fieldview::HttpService.get(path, self.access_token, params)
  			end
  			
+ 			debugger
+ 			p 'sdadsa'
+
  			api_response(resource, response)
  		end
 

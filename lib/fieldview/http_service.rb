@@ -4,12 +4,13 @@ module Fieldview
 		DEFAULT_HOST = "https://platform.climate.com"
 
 		class << self
-			def get(path, access_token)
+			def get(path, access_token, params = {})
 				req_path = append_path_api_version(path)
 
 	 			response = service.get(req_path) do |req|
 	 				headers = default_headers({"access_token" => access_token})
 
+	 				req.params.merge!(params)
  					req.headers.merge!(headers)
  				end
 
@@ -23,7 +24,7 @@ module Fieldview
 
  				JSON.parse response.body if response.status == 200
  			end
-		
+
 			private
 
 			def service

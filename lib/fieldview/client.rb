@@ -9,5 +9,7 @@ module Fieldview
  			api_call(:fields, :get, all ? "all" : nil)
  		end
 
+    def planting_activities
+    end
 	end
 end
