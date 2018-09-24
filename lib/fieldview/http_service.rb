@@ -4,15 +4,15 @@ module Fieldview
 		DEFAULT_HOST = "https://platform.climate.com"
 
 		class << self
-			def get(path, access_token, params = {}, a = nil)
+			def get(path, access_token, is_binary_body = nil, params = {})
 				req_path = append_path_api_version(path)
 
 	 			response = service.get(req_path) do |req|
 
 	 				headers = default_headers({"access_token" => access_token})
 
- 					headers.merge!({'Range' => 'bytes=0-1028111'}) if a
- 					headers.merge!({'accept' => 'application/octet-stream'}) if a
+ 					headers.merge!({'Range' => 'bytes=0-1028111'})           if is_binary_body
+ 					headers.merge!({'accept' => 'application/octet-stream'}) if is_binary_body
 
 	 				req.params.merge!(params)
  					req.headers.merge!(headers)
@@ -27,24 +27,28 @@ module Fieldview
 				end
 
  				if response.status.to_i == 200 || response.status.to_i == 206
- 					if a
- 						binary = response.body
-            teste  = ''
+ 					if is_binary_body
+ 						response_binary      = response.body
+            dat_file_content     = ''
+            response_binary_path = "#{Rails.root}/tmp/binary/response_binary.zip"
 
- 						File.open("#{Rails.root}/tmp/binary/binary.zip", "wb") do |file|
-						  file.write(binary)
+ 						File.open(response_binary_path, "wb") do |file|
+						  file.write(response_binary)
 						end
 
-						zip_file = Zip::ZipFile.open("#{Rails.root}/tmp/binary/binary.zip")
+						zip_file = Zip::ZipFile.open(response_binary_path)
 
             zip_file.each do |entry|
-              entry.extract("#{Rails.root}/tmp/binary/#{entry.name}") { true }
+              entry_path = "#{Rails.root}/tmp/binary/#{entry.name}"
               
-              File.open("#{Rails.root}/tmp/binary/#{entry.name}", "r") do |dat_file|
-                teste << dat_file.read
+              entry.extract(entry_path) { true }
+              
+              File.open(entry_path, "r") do |dat_file|
+                dat_file_content << dat_file.read
               end
             end
 
+            dat_file_content
             debugger
             puts "sadasd"
  					else
