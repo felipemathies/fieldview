@@ -8,7 +8,5 @@ module Fieldview
  		def fields(all = false)
  			api_call(:fields, :get, all ? "all" : nil)
  		end
-
-    #layers
 	end
 end

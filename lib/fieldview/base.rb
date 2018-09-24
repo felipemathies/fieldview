@@ -11,31 +11,16 @@ module Fieldview
 			api_call(:boundaries, :get, id)
 		end
 
-		def planting_activity(id)
-			api_call(:asPlanted, :get, nil, { 'resourceOwnerId' => resource_owner_id })
-		end
-
-		def zip(id)
-			api_call(:asPlanted, :get, id) #setado manual para testes
-		end
-
  		private
 
- 		def api_call(resource, method, id = nil, params = {})
+ 		def api_call(resource, method, id = nil)
  			response = nil
 
  			if method == :get
- 				path = ""
- 				path << "/layers" if resource == :asPlanted
- 				path << "/#{resource.to_s}"
- 				path << "/#{id}" 	  unless id.blank?
- 				path << "/contents" if resource == :asPlanted
+ 				path = "/#{resource.to_s}"
+ 				path << "/#{id}" 	unless id.blank?
 
- 				if resource == :asPlanted
- 					a = 1
- 				end
-
- 				response = Fieldview::HttpService.get(path, self.access_token, params, a)
+ 				response = Fieldview::HttpService.get(path, self.access_token)
  			end
 
  			api_response(resource, response)
