@@ -11,7 +11,7 @@ module Fieldview
 
 	 				headers = default_headers({"access_token" => access_token})
 
- 					headers.merge!({'Range' => 'bytes=0-1028111'})           if is_binary_body
+ 					headers.merge!({'Range' => 'bytes=0-5242880'})           if is_binary_body
  					headers.merge!({'accept' => 'application/octet-stream'}) if is_binary_body
 
 	 				req.params.merge!(params)
@@ -49,8 +49,6 @@ module Fieldview
             end
 
             dat_file_content
-            debugger
-            puts "sadasd"
  					else
  						JSON.parse response.body 
  					end
