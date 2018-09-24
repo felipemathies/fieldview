@@ -1,14 +1,22 @@
 module Fieldview
 	class Base
-		
+
 		attr_accessor :access_token
 
-		def onwer(id)
+		def owner(id)
 			api_call(:resourceOwners, :get, id)
 		end
 
 		def boundary(id)
 			api_call(:boundaries, :get, id)
+		end
+
+		def planting_activity(id)
+			api_call(:asPlanted, :get, nil, { 'resourceOwnerId' => resource_owner_id })
+		end
+
+		def zip(id)
+			api_call(:asPlanted, :get, id) #setado manual para testes
 		end
 
  		private
@@ -17,14 +25,18 @@ module Fieldview
  			response = nil
 
  			if method == :get
- 				path = "/#{resource.to_s}"
- 				path << "/#{id}" 	unless id.blank?
+ 				path = ""
+ 				path << "/layers" if resource == :asPlanted
+ 				path << "/#{resource.to_s}"
+ 				path << "/#{id}" 	  unless id.blank?
+ 				path << "/contents" if resource == :asPlanted
 
- 				response = Fieldview::HttpService.get(path, self.access_token, params)
+ 				if resource == :asPlanted
+ 					a = 1
+ 				end
+
+ 				response = Fieldview::HttpService.get(path, self.access_token, params, a)
  			end
- 			
- 			debugger
- 			p 'sdadsa'
 
  			api_response(resource, response)
  		end
