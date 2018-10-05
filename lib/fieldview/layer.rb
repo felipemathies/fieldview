@@ -8,7 +8,13 @@ module Fieldview
     end
 
     def planting_activities(resource_owner_id)
-      api_call(:asPlanted, :get, nil, nil, { 'resourceOwnerId' => resource_owner_id })
+      params = { 
+        :resourceOwnerId => resource_owner_id
+        # :occurredAfter   => occurred_after,
+        # :occurredBefore  => occurred_before
+      }
+
+      api_call(:asPlanted, :get, nil, nil, params)
     end
 
     def raw(planting_activity_id)

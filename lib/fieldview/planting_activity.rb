@@ -11,7 +11,7 @@ module Fieldview
           value.each do |fieldId|
             fields << Fieldview::Factory.new(:field, { id: fieldId })
           end
-
+          
           instance_variable_set("@#{key.to_s.underscore}", fields)
         else
           instance_variable_set("@#{key.to_s.underscore}", value)
