@@ -27,32 +27,12 @@ module Fieldview
 				end
 
  				if response.status.to_i == 200 || response.status.to_i == 206
- 					if is_binary_body
- 						response_binary      = response.body
-            dat_file_content     = ''
-            response_binary_path = "#{Rails.root}/tmp/binary/response_binary.zip"
+          result = nil
 
- 						File.open(response_binary_path, "wb") do |file|
-						  file.write(response_binary)
-						end
-
-						zip_file = Zip::ZipFile.open(response_binary_path)
-
-            zip_file.each do |entry|
-              entry_path = "#{Rails.root}/tmp/binary/#{entry.name}"
-              
-              entry.extract(entry_path) { true }
-              
-              File.open(entry_path, "r") do |dat_file|
-                dat_file_content << dat_file.read
-              end
-            end
-
-            dat_file_content
- 					else
- 						JSON.parse response.body 
- 					end
+ 					result = is_binary_body ? response.body : (JSON.parse response.body)
  				end
+
+        result
  			end
 
 			private
