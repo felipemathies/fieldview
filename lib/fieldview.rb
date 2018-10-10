@@ -9,7 +9,6 @@ require "fieldview/field"
 require "fieldview/http_service"
 require "fieldview/factory"
 require "fieldview/configuration"
-require "fieldview/layer"
 require "fieldview/planting_activity"
 
 module Fieldview
