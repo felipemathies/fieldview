@@ -1,5 +1,5 @@
 module Fieldview
-  class PlantingActivity < Fieldview::Layer
+  class PlantingActivity < Fieldview::Base
 
     attr_accessor :id, :start_time, :end_time, :created_at, :updated_at, :length, :field_ids, :access_token, :raw
 
