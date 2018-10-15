@@ -4,11 +4,11 @@ module Fieldview
 		attr_accessor :access_token
 
 		def owner(id)
-			api_call(:resourceOwners, :get, id: id)
+			api_call(:resourceOwner, :get, id: id)
 		end
 
 		def boundary(id)
-			api_call(:boundaries, :get, id: id)
+			api_call(:boundary, :get, id: id)
 		end
 
  		private
@@ -17,7 +17,7 @@ module Fieldview
       response = nil
 
       if :get == method
-        path = create_path(resource, args[:id], args[:all])
+        path = create_path(resource, args[:id] || args[:all])
 
         response = Fieldview::HttpService.get(path, self.access_token, args[:is_binary_body], args[:request_params])
       end
@@ -39,17 +39,12 @@ module Fieldview
  			end
  		end
 
-  	def create_path(resource, id, all)
-      path = Field.path(all)           if resource == :fields
-      path = Boundary.path(id)         if resource == :boundaries
-      path = PlantingActivity.path(id) if resource == :asPlanted
-
-      path
+  	def create_path(resource, source)
+       instance = Fieldview::Factory.new(resource)
+       instance.path(source)
     end
 
     def instantiate_resource(resource, attrs)
-      resource = :plantingActivity if resource == 'asPlanted'
-
       Fieldview::Factory.new(resource, attrs.merge({access_token: self.access_token}))
     end
   end
