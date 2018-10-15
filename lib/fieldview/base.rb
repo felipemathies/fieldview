@@ -4,22 +4,20 @@ module Fieldview
 		attr_accessor :access_token
 
 		def owner(id)
-			api_call(resource: :resourceOwners, method: :get, id: id)
+			api_call(:resourceOwners, :get, id: id)
 		end
 
 		def boundary(id)
-			api_call(resource: :boundaries, method: :get, id: id)
+			api_call(:boundaries, :get, id: id)
 		end
 
  		private
 
-    def api_call(args = {})
-      args[:is_binary_body] ||= nil
-      args[:request_params] ||= {}
-      response                = nil
+    def api_call(resource, method, args = {})
+      response = nil
 
-      if :get == args[:method]
-        path = create_path(args[:resource], args[:id], args[:all])
+      if :get == method
+        path = create_path(resource, args[:id], args[:all])
 
         response = Fieldview::HttpService.get(path, self.access_token, args[:is_binary_body], args[:request_params])
       end
@@ -27,7 +25,7 @@ module Fieldview
       if args[:is_binary_body]
         return response
       else
-        return api_response(args[:resource], response)
+        return api_response(resource, response)
       end
     end
 
@@ -42,12 +40,9 @@ module Fieldview
  		end
 
   	def create_path(resource, id, all)
-      path = ""
-
-      path << (resource == :fields || resource == :boundaries ? "/#{resource.to_s}" : "layers/#{resource.to_s}")
-      path << "/#{id}" if id
-      path << "/all"   if all
-      path << "/contents" if id && resource == :asPlanted
+      path = Field.path(all)           if resource == :fields
+      path = Boundary.path(id)         if resource == :boundaries
+      path = PlantingActivity.path(id) if resource == :asPlanted
 
       path
     end
