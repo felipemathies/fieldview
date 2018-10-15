@@ -4,7 +4,7 @@ module Fieldview
 		DEFAULT_HOST = "https://platform.climate.com"
 
 		class << self
-			def get(path, access_token, is_binary_body = nil, params = {})
+			def get(path, access_token, is_binary_body, params)
 				req_path = append_path_api_version(path)
 
 	 			response = service.get(req_path) do |req|
@@ -13,6 +13,8 @@ module Fieldview
 
  					headers.merge!({'Range' => 'bytes=0-5242880'})           if is_binary_body
  					headers.merge!({'accept' => 'application/octet-stream'}) if is_binary_body
+
+          params = {} unless params
 
 	 				req.params.merge!(params)
  					req.headers.merge!(headers)
