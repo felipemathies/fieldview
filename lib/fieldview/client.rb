@@ -6,7 +6,7 @@ module Fieldview
  		end
 
  		def fields(all = false)
- 			api_call(:fields, :get, all: all)
+ 			api_call(:field, :get, all: all)
  		end
 
     def planting_activities(resource_owner_id)
@@ -14,7 +14,7 @@ module Fieldview
         :resourceOwnerId => resource_owner_id
       }
 
-      api_call(:asPlanted, :get, request_params: request_params)
+      api_call(:plantingActivity, :get, request_params: request_params)
     end
 	end
 end

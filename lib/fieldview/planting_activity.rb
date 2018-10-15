@@ -3,7 +3,7 @@ module Fieldview
 
     attr_accessor :id, :start_time, :end_time, :created_at, :updated_at, :length, :field_ids, :access_token, :raw
 
-    def self.path(id)
+    def path(id)
       id ? "layers/asPlanted/#{id}/contents" : "layers/asPlanted"
     end
 
@@ -24,7 +24,7 @@ module Fieldview
     end
 
     def content
-      self.raw = api_call(:asPlanted, :get, id: self.id, is_binary_body: true)
+      self.raw = api_call(:plantingActivity, :get, id: self.id, is_binary_body: true)
     end
   end
 end

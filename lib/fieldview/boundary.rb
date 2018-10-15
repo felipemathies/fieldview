@@ -3,7 +3,7 @@ module Fieldview
 
 		attr_accessor :geo_json_data
 
-    def self.path(id)
+    def path(id)
       "/boundaries/#{id}"
     end
 
