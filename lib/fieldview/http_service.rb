@@ -2,19 +2,18 @@ module Fieldview
 	class HttpService
 
 		DEFAULT_HOST = "https://platform.climate.com"
+    MAX_BINARY_BODY_RANGE = "5242880"
 
 		class << self
-			def get(path, access_token, is_binary_body, params)
+			def get(path, access_token, is_binary_body, params = {})
 				req_path = append_path_api_version(path)
 
 	 			response = service.get(req_path) do |req|
 
 	 				headers = default_headers({"access_token" => access_token})
 
- 					headers.merge!({'Range' => 'bytes=0-5242880'})           if is_binary_body
- 					headers.merge!({'accept' => 'application/octet-stream'}) if is_binary_body
-
-          params = {} unless params
+ 					headers.merge!({'Range' => "bytes=0-#{MAX_BINARY_BODY_RANGE}"}) if is_binary_body
+ 					headers.merge!({'accept' => 'application/octet-stream'})        if is_binary_body
 
 	 				req.params.merge!(params)
  					req.headers.merge!(headers)
