@@ -30,7 +30,9 @@ module Fieldview
     end
 
  		def api_response(resource, response)
-      if response["results"]
+      if response.nil?
+        return {}
+      elsif response["results"]
  				response["results"].map do |attrs|
  					instantiate_resource(resource.to_s.singularize, attrs)
  				end
