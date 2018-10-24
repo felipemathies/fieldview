@@ -9,7 +9,7 @@ module Fieldview
  			api_call(:field, :get, all: all)
  		end
 
-    def planting_activities(resource_owner_id = nil, updated_after = nil, occurred_before = nil, occurred_after = nil)
+    def planting_activities(resource_owner_id = nil, occurred_after = nil, occurred_before = nil, updated_after = nil)
       request_params = {}
 
       request_params["resourceOwnerId"] = resource_owner_id if resource_owner_id
