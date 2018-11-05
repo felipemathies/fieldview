@@ -3,6 +3,10 @@ module Fieldview
 
 		attr_accessor :id, :name, :boundary_id, :resource_owner_id
 
+		def path(all = false)
+			all ? "/fields/all" : "/fields"
+		end
+
 		def initialize(attrs)
 			attrs.each do |key, value|
         instance_variable_set("@#{key.to_s.underscore}", value)
@@ -13,7 +17,7 @@ module Fieldview
  			super(self.boundary_id)
 		end
 
-		def onwer
+		def owner
 			super(self.resource_owner_id)
 		end
 	end

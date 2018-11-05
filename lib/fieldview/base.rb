@@ -1,33 +1,38 @@
 module Fieldview
 	class Base
-		
+
 		attr_accessor :access_token
 
-		def onwer(id)
-			api_call(:resourceOwners, :get, id)
+		def owner(id)
+			api_call(:resourceOwner, :get, id: id)
 		end
 
 		def boundary(id)
-			api_call(:boundaries, :get, id)
+			api_call(:boundary, :get, id: id)
 		end
 
  		private
 
- 		def api_call(resource, method, id = nil)
- 			response = nil
+    def api_call(resource, method, args = {})
+      response = nil
 
- 			if method == :get
- 				path = "/#{resource.to_s}" 
- 				path << "/#{id}" unless id.blank?
+      if :get == method
+        path = create_path(resource, args[:id] || args[:all])
 
- 				response = Fieldview::HttpService.get(path, self.access_token)
- 			end
- 			
- 			api_response(resource, response)
- 		end
+        response = Fieldview::HttpService.get(path, self.access_token, args[:is_binary_body], args[:request_params])
+      end
+
+      if args[:is_binary_body]
+        return response
+      else
+        return api_response(resource, response)
+      end
+    end
 
  		def api_response(resource, response)
- 			if response["results"]
+      if response.nil?
+        return {}
+      elsif response["results"]
  				response["results"].map do |attrs|
  					instantiate_resource(resource.to_s.singularize, attrs)
  				end
@@ -36,8 +41,13 @@ module Fieldview
  			end
  		end
 
- 		def instantiate_resource(resource, attrs)
- 			Fieldview::Factory.new(resource, attrs.merge({access_token: self.access_token}))
- 		end
-	end
+  	def create_path(resource, source)
+       instance = Fieldview::Factory.new(resource)
+       instance.path(source)
+    end
+
+    def instantiate_resource(resource, attrs)
+      Fieldview::Factory.new(resource, attrs.merge({access_token: self.access_token}))
+    end
+  end
 end
