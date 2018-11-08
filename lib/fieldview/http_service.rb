@@ -6,6 +6,8 @@ module Fieldview
 
 		class << self
 			def get(path, access_token, is_binary_body, params = {})
+        params ||= {}
+
 				req_path = append_path_api_version(path)
 
 	 			response = service.get(req_path) do |req|
