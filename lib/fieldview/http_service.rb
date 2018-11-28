@@ -23,14 +23,16 @@ module Fieldview
 					
 					if response.headers.has_key? "x-next-token"
 						next_token = response.headers["x-next-token"]
+						
 						loop do
 							next_response = get_response(path, access_token, is_binary_body, params, {'x-next-token' => next_token})
 							break if next_response.status.to_i == 304
 							
-							next_token = next_response.headers["x-next-token"]
+							next_token  = next_response.headers["x-next-token"]
 							next_result = extract_result(is_binary_body, response)
 							result["results"].concat(next_result["results"]) if next_result
 						end
+					
 					end
  				end
 
@@ -69,6 +71,7 @@ module Fieldview
 					req.params.merge!(params)
 					req.headers.merge!(headers)
 				end
+
 				response
 			end
 
