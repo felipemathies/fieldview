@@ -10,6 +10,7 @@ require "fieldview/http_service"
 require "fieldview/factory"
 require "fieldview/configuration"
 require "fieldview/planting_activity"
+require "fieldview/harvest_activity"
 
 module Fieldview
 	class << self
