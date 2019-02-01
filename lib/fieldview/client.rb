@@ -17,7 +17,7 @@ module Fieldview
       request_params["occurredBefore"]  = occurred_before   if occurred_before
       request_params["occurredAfter"]   = occurred_after    if occurred_after
 
-      api_call(resource.to_sym, :get, request_params: request_params)
+      api_call(resource, :get, request_params: request_params)
     end
     
 	end

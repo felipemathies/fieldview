@@ -7,7 +7,7 @@ module Fieldview
     end
 
     #abstract method
-    def get_resource
+    def resource
     end
 
     def initialize(attrs)
@@ -27,7 +27,7 @@ module Fieldview
     end
 
     def content
-      self.raw = api_call(self.get_resource, :get, id: self.id, is_binary_body: true)
+      self.raw = api_call(self.resource, :get, id: self.id, is_binary_body: true)
     end
   end  
 end  

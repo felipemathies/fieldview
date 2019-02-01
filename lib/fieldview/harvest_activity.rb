@@ -5,8 +5,8 @@ module Fieldview
       id ? "layers/asHarvested/#{id}/contents" : "layers/asHarvested"
     end
 
-    def get_resource
-      :harvestActivity
+    def resource
+      self.class.name.demodulize
     end
 
   end

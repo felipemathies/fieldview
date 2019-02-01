@@ -5,8 +5,8 @@ module Fieldview
       id ? "layers/asPlanted/#{id}/contents" : "layers/asPlanted"
     end
 
-    def get_resource
-      :plantingActivity
+    def resource
+      self.class.name.demodulize
     end
   end
 end
