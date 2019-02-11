@@ -5,21 +5,10 @@ module Fieldview
     MAX_BINARY_BODY_RANGE = "5242880"
 
 		class << self
-			def get(path, access_token, is_binary_body, params = {})
-        params ||= {}
+			def get(path, access_token, is_binary_body, params = {}, header = {})
+				result = nil
 
-				req_path = append_path_api_version(path)
-
-	 			response = service.get(req_path) do |req|
-
-	 				headers = default_headers({"access_token" => access_token})
-
- 					headers.merge!({'Range' => "bytes=0-#{MAX_BINARY_BODY_RANGE}"}) if is_binary_body
- 					headers.merge!({'accept' => 'application/octet-stream'})        if is_binary_body
-
-	 				req.params.merge!(params)
- 					req.headers.merge!(headers)
- 				end
+				response = get_response(path, access_token, is_binary_body, params, header)
 
  				if response.status.to_i >= 400 && response.status.to_i < 500
           raise Fieldview::ClientError.new(response.status.to_i, response.body)
@@ -30,9 +19,21 @@ module Fieldview
 				end
 
  				if response.status.to_i == 200 || response.status.to_i == 206
-          result = nil
-
- 					result = is_binary_body ? response.body : (JSON.parse response.body)
+					result = extract_result(is_binary_body, response)
+					
+					if response.headers.has_key? "x-next-token"
+						next_token = response.headers["x-next-token"]
+						
+						loop do
+							next_response = get_response(path, access_token, is_binary_body, params, {'x-next-token' => next_token})
+							break if next_response.status.to_i == 304
+							
+							next_token  = next_response.headers["x-next-token"]
+							next_result = extract_result(is_binary_body, response)
+							result["results"].concat(next_result["results"]) if next_result
+						end
+					
+					end
  				end
 
         result
@@ -55,6 +56,28 @@ module Fieldview
  			def append_path_api_version(path)
  				Fieldview.config.api_version + "/" + path
  			end
- 		end
+		
+			def get_response(path, access_token, is_binary_body, params = {}, header = {})
+				params ||= {}
+				req_path = append_path_api_version(path)
+
+				response = service.get(req_path) do |req|
+					headers = default_headers({"access_token" => access_token})
+
+					headers.merge!({'Range' => "bytes=0-#{MAX_BINARY_BODY_RANGE}"}) if is_binary_body
+					headers.merge!({'accept' => 'application/octet-stream'})        if is_binary_body
+				 	headers.merge!(header)
+
+					req.params.merge!(params)
+					req.headers.merge!(headers)
+				end
+
+				response
+			end
+
+			def extract_result(is_binary_body, response)
+				is_binary_body ? response.body : (JSON.parse response.body)				
+			end
+		end
 	end
 end
