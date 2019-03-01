@@ -30,7 +30,7 @@ module Fieldview
         api_call(resource, :get, request_params: request_params)
         return true
       rescue Fieldview::ClientError => exception
-        return false if exception.http_status == 403
+        return false if exception.http_status == 403 || exception.http_status == 401
       end
     end
 
