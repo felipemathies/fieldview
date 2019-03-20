@@ -6,17 +6,8 @@ module Fieldview
 
 		class << self
 			def get(path, access_token, is_binary_body, params = {}, header = {})
-				result = nil
-
+				result  = nil
 				response = get_response(path, access_token, is_binary_body, params, header)
-
- 				if response.status.to_i >= 400 && response.status.to_i < 500
-          raise Fieldview::ClientError.new(response.status.to_i, response.body)
-				end
-
- 				if response.status.to_i >= 500
-          raise Fieldview::ServerError.new(response.status.to_i, response.body)
-				end
 
  				if response.status.to_i == 200 || response.status.to_i == 206
 					result = extract_result(is_binary_body, response)
@@ -26,13 +17,14 @@ module Fieldview
 						
 						loop do
 							next_response = get_response(path, access_token, is_binary_body, params, {'x-next-token' => next_token})
-							break if next_response.status.to_i == 304
-							
+
+							break if next_response.status.to_i == 304 || next_response.status.to_i == 200
+
 							next_token  = next_response.headers["x-next-token"]
-							next_result = extract_result(is_binary_body, response)
+							next_result = extract_result(is_binary_body, next_response)
+
 							result["results"].concat(next_result["results"]) if next_result
 						end
-					
 					end
  				end
 
@@ -50,6 +42,8 @@ module Fieldview
  				default['accept'] = 'application/json'
  				default['X-Api-Key'] = Fieldview.config.api_key
  				default["Authorization"] = "Bearer #{args["access_token"]}" if args["access_token"]
+ 				default["Cache-Control"] = "reload"
+ 				default["X-Limit"] 			 = "1000"
  				default
  			end
 
@@ -70,6 +64,18 @@ module Fieldview
 
 					req.params.merge!(params)
 					req.headers.merge!(headers)
+				end
+
+				if response.status.to_i == 429
+					raise Fieldview::ServerError.new(response.status.to_i, response.body, "Request Limit")
+				end
+
+				if response.status.to_i >= 400 && response.status.to_i < 500
+					raise Fieldview::ClientError.new(response.status.to_i, response.body)
+				end
+
+				if response.status.to_i >= 500
+					raise Fieldview::ServerError.new(response.status.to_i, response.body)
 				end
 
 				response
