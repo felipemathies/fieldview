@@ -43,7 +43,7 @@ module Fieldview
  				default['X-Api-Key'] = Fieldview.config.api_key
  				default["Authorization"] = "Bearer #{args["access_token"]}" if args["access_token"]
  				default["Cache-Control"] = "reload"
- 				default["X-Limit"] 			 = "1000"
+ 				default["X-Limit"] 			 = "100"
  				default
  			end
 
