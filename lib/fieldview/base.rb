@@ -11,6 +11,10 @@ module Fieldview
 			api_call(:boundary, :get, id: id)
 		end
 
+    def farm_organization(id)
+      api_call(:farmOrganization, :get, id: id)
+    end
+
  		private
 
     def api_call(resource, method, args = {})
