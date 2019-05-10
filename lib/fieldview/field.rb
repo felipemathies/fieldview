@@ -1,7 +1,7 @@
 module Fieldview
 	class Field < Fieldview::Base
 
-		attr_accessor :id, :name, :boundary_id, :resource_owner_id
+		attr_accessor :id, :name, :boundary_id, :resource_owner_id, :parent
 
 		def path(all = false)
 			all ? "/fields/all" : "/fields"
@@ -19,6 +19,10 @@ module Fieldview
 
 		def owner
 			super(self.resource_owner_id)
+		end
+
+		def farm_organization
+			super(self.parent['id'])
 		end
 	end
 end
