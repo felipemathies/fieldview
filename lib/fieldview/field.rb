@@ -3,8 +3,12 @@ module Fieldview
 
 		attr_accessor :id, :name, :boundary_id, :resource_owner_id
 
-		def path(all = false)
-			all ? "/fields/all" : "/fields"
+		def path(source = false)
+			path = "/fields"			
+			path = path + "/all" 			 if source.is_a?(Boolean) && source == true
+			path = path + "/#{source}" unless source.is_a?(Boolean)
+
+			path
 		end
 
 		def initialize(attrs)
