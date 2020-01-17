@@ -12,6 +12,9 @@ require "fieldview/configuration"
 require "fieldview/activity"
 require "fieldview/planting_activity"
 require "fieldview/harvest_activity"
+require "fieldview/upload"
+require "fieldview/upload_handler"
+require "fieldview/upload_service"
 
 module Fieldview
 	class << self
