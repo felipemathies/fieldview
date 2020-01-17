@@ -29,6 +29,17 @@ module Fieldview
       end
     end
 
+    def api_upload(method, args = {})
+      response = nil
+
+      if method == :post
+        path = create_path(:upload)
+        response = Fieldview::UploadService.post(path, self.access_token, args[:body], args[:headers])      
+      end
+
+      response
+    end
+
  		def api_response(resource, response)
       if response.nil?
         return {}
@@ -41,7 +52,7 @@ module Fieldview
  			end
  		end
 
-  	def create_path(resource, source)
+  	def create_path(resource, source = {})
        instance = Fieldview::Factory.new(resource)
        instance.path(source)
     end

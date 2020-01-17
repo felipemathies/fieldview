@@ -8,6 +8,15 @@ module Fieldview
  		def fields(all = false)
  			api_call(:field, :get, all: all)
     end
+
+    def field(id)
+      api_call(:field, :get, id: id)
+    end
+
+    def heatmap(tiff_data, email)
+      handler   = Fieldview::UploadHandler.new(tiff_data, email)
+      upload_id = api_upload(:post, handler.heatmap_upload_id_args)
+    end
      
     def activities(resource, resource_owner_id = nil, occurred_after = nil, occurred_before = nil, updated_after = nil)
       request_params = {}
