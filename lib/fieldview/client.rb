@@ -13,9 +13,12 @@ module Fieldview
       api_call(:field, :get, id: id)
     end
 
-    def heatmap(tiff_data, email)
-      handler   = Fieldview::UploadHandler.new(tiff_data, email)
-      upload_id = api_upload(:post, handler.heatmap_upload_id_args)
+    def upload(data, resource_owner, content_type)
+      upload_id = Fieldview::Upload.upload_id(data, resource_owner, access_token, content_type)
+
+      api_upload(:uploadChunk, :put, upload_id: upload_id, body: data) if upload_id
+
+      upload_id
     end
      
     def activities(resource, resource_owner_id = nil, occurred_after = nil, occurred_before = nil, updated_after = nil)
