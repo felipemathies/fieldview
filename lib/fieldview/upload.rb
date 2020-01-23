@@ -4,7 +4,7 @@ module Fieldview
     attr_accessor :data, :resource_owner, :access_token, :content_type
 
 		def path(id = nil)
-			"/uploads"
+			id ? "/uploads/#{id}" : "/uploads"
 		end
 
     def initialize(attrs)
@@ -13,15 +13,21 @@ module Fieldview
 			end
 		end
 
-		def self.upload_id(data, resource_owner, access_token, content_type)
-			new(data: data, resource_owner: resource_owner, access_token: access_token, content_type: content_type).id
+		def self.upload(data, resource_owner, access_token, content_type)
+			new(data: data, resource_owner: resource_owner, access_token: access_token, content_type: content_type).upload_chunks
 		end
 
-    def id
-      api_upload(:upload, :post, args)
-    end
+		def upload_chunks
+			api_upload(:upload, :put, upload_id: upload_id, body: self.data)
+
+			upload_id
+		end
 
     private
+
+		def upload_id
+			@upload_id ||= api_upload(:upload, :post, args)
+		end
 
 		def args
 			{

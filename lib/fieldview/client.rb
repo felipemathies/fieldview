@@ -14,11 +14,11 @@ module Fieldview
     end
 
     def upload(data, resource_owner, content_type)
-      upload_id = Fieldview::Upload.upload_id(data, resource_owner, access_token, content_type)
+      Fieldview::Upload.upload(data, resource_owner, access_token, content_type)
+    end
 
-      api_upload(:uploadChunk, :put, upload_id: upload_id, body: data) if upload_id
-
-      upload_id
+    def upload_status(upload_id)
+      api_upload(:uploadStatus, :get, upload_id: upload_id)
     end
      
     def activities(resource, resource_owner_id = nil, occurred_after = nil, occurred_before = nil, updated_after = nil)

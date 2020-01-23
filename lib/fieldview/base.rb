@@ -32,7 +32,10 @@ module Fieldview
     def api_upload(resource, method, args = {})
       response = nil
 
-      if method == :post
+      if method == :get
+        path     = create_path(resource, args[:upload_id])
+        response = Fieldview::UploadService.get(path, self.access_token, false)
+      elsif method == :post
         path     = create_path(resource, nil)
         response = Fieldview::UploadService.post(path, self.access_token, args[:body], args[:headers])
       elsif method == :put
