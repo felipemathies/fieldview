@@ -16,6 +16,7 @@ require "fieldview/upload"
 require "fieldview/upload_status"
 require "fieldview/upload_content_type"
 require "fieldview/upload_service"
+require "fieldview/farm_organization"
 
 module Fieldview
 	class << self
