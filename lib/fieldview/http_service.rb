@@ -33,8 +33,6 @@ module Fieldview
         result
  			end
 
-			private
-
 			def service
  				Faraday.new(DEFAULT_HOST)
  			end
@@ -44,8 +42,6 @@ module Fieldview
  				default['accept'] = 'application/json'
  				default['X-Api-Key'] = Fieldview.config.api_key
  				default["Authorization"] = "Bearer #{args["access_token"]}" if args["access_token"]
- 				default["Cache-Control"] = "reload"
- 				default["X-Limit"] 			 = "100"
  				default
  			end
 
@@ -60,27 +56,25 @@ module Fieldview
 				response = service.get(req_path) do |req|
 					headers = default_headers({"access_token" => access_token})
 
-					headers.merge!({'Range' => "bytes=0-#{MAX_BINARY_BODY_RANGE}"}) if is_binary_body
-					headers.merge!({'accept' => 'application/octet-stream'})        if is_binary_body
+					headers.merge!({'Cache-Control' => 'reload'})
+					headers.merge!({'X-Limit' 			=> '100'})
+					headers.merge!({'Range' 				=> "bytes=0-#{MAX_BINARY_BODY_RANGE}"}) if is_binary_body
+					headers.merge!({'accept' 				=> 'application/octet-stream'})        	if is_binary_body
 				 	headers.merge!(header)
 
 					req.params.merge!(params)
 					req.headers.merge!(headers)
 				end
 
-				if response.status.to_i == 429
-					raise Fieldview::ServerError.new(response.status.to_i, response.body, "Request Limit")
-				end
-
-				if response.status.to_i >= 400 && response.status.to_i < 500
-					raise Fieldview::ClientError.new(response.status.to_i, response.body)
-				end
-
-				if response.status.to_i >= 500
-					raise Fieldview::ServerError.new(response.status.to_i, response.body)
-				end
+				check_response_status(response)
 
 				response
+			end
+
+			def check_response_status(response)
+				raise Fieldview::ServerError.new(response.status.to_i, response.body, "Request Limit") if response.status.to_i == 429
+				raise Fieldview::ClientError.new(response.status.to_i, response.body) 								 if response.status.to_i >= 400 && response.status.to_i < 500
+				raise Fieldview::ServerError.new(response.status.to_i, response.body)									 if response.status.to_i >= 500
 			end
 
 			def extract_result(is_binary_body, response)

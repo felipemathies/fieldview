@@ -8,6 +8,18 @@ module Fieldview
  		def fields(all = false)
  			api_call(:field, :get, all: all)
     end
+
+    def field(id)
+      api_call(:field, :get, id: id)
+    end
+
+    def upload(data, resource_owner, content_type)
+      Fieldview::Upload.upload(data, resource_owner, access_token, content_type)
+    end
+
+    def upload_status(upload_id)
+      api_upload(:uploadStatus, :get, upload_id: upload_id)
+    end
      
     def activities(resource, resource_owner_id = nil, occurred_after = nil, occurred_before = nil, updated_after = nil)
       request_params = {}

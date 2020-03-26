@@ -12,6 +12,10 @@ require "fieldview/configuration"
 require "fieldview/activity"
 require "fieldview/planting_activity"
 require "fieldview/harvest_activity"
+require "fieldview/upload"
+require "fieldview/upload_status"
+require "fieldview/upload_content_type"
+require "fieldview/upload_service"
 require "fieldview/farm_organization"
 
 module Fieldview
